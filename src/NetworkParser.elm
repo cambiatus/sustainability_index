@@ -1,14 +1,17 @@
-module NetworkParser exposing (
-    NodeUrl(..)
-     , simpleEdgeListFromString
-     , stringOfSimpleEdgeList
-     , nodesFromString
-     , edgeListFromString
-     , networkFromString 
-     , identifier)
+module NetworkParser
+    exposing
+        ( NodeUrl(..)
+        , simpleEdgeListFromString
+        , stringOfSimpleEdgeList
+        , nodesFromString
+        , edgeListFromString
+        , networkFromString
+        , identifier
+        , url
+        )
 
 import Parser exposing (..)
-import Parser.Extras exposing(many)
+import Parser.Extras exposing (many)
 import Network
     exposing
         ( Network(..)
@@ -54,6 +57,38 @@ identifier =
         succeed ()
             |. chompIf isStartChar
             |. chompWhile isInnerChar
+
+
+type StringPair
+    = StringPair String String
+
+
+stringFromStringPair : StringPair -> String
+stringFromStringPair (StringPair prefix root) =
+    prefix ++ root
+
+
+url : Parser String
+url =
+    (succeed StringPair
+        |. spaces
+        |= oneOf [ word "http://", word "https://", word "ipfs://" ]
+        |= anyString
+    )
+        |> Parser.map (\stringPair -> stringFromStringPair stringPair)
+
+
+word : String -> Parser String
+word str =
+    symbol str |> Parser.map (\() -> str)
+
+
+anyString : Parser String
+anyString =
+    getChompedString <|
+        succeed ()
+            |. chompIf isStartChar
+            |. chompWhile (\char -> char /= ' ' && char /= '\n')
 
 
 endsWithChar : Char -> Parser String

@@ -44,6 +44,7 @@ type Msg
     | InputTargetNode String
     | InputEdgeFlow String
     | UpdateNetwork
+    | ToggleDisplayMode
 
 
 type alias Model =
@@ -55,12 +56,18 @@ type alias Model =
     , edgeFlow : String
     , dataFormat : DataFormat
     , avatarList : List NodeUrl
+    , displayMode : DisplayMode
     }
 
 
 type DataFormat
     = CSV
     | SingleLine
+
+
+type DisplayMode
+    = NetworkDisplay
+    | AvatarDisplay
 
 
 initialNetworkAsCSV =
@@ -96,6 +103,7 @@ initialModel =
     , edgeFlow = ""
     , dataFormat = CSV
     , avatarList = initialAvatarList
+    , displayMode = NetworkDisplay
     }
 
 
@@ -167,6 +175,14 @@ update msg model =
         InputEdgeFlow str ->
             ( { model | edgeFlow = str }, Cmd.none )
 
+        ToggleDisplayMode ->
+            case model.displayMode of
+                NetworkDisplay ->
+                    ( { model | displayMode = AvatarDisplay }, Cmd.none )
+
+                AvatarDisplay ->
+                    ( { model | displayMode = NetworkDisplay }, Cmd.none )
+
 
 simpleEdgeListFromString : DataFormat -> (String -> List SimpleEdge)
 simpleEdgeListFromString dataFormat =
@@ -187,9 +203,20 @@ mainRow : Model -> Element Msg
 mainRow model =
     column [ width fill, height fill, centerX, centerY, spacing 20, Font.size 16 ]
         [ el [ Font.bold, Font.size 24, centerX, centerY, moveUp 20 ] (text "Network")
-        , row [ centerX, spacing 20 ] (networkDisplay model)
-        , row [ centerX, paddingEach { left = 0, right = 0, top = 20, bottom = 80 } ] [ networkEntryForm model ]
+        , row [ centerX, spacing 20 ] (display model)
+        , row [ centerX, paddingEach { left = 0, right = 0, top = 20, bottom = 8 } ] [ networkEntryForm model ]
+        , row [ centerX, paddingEach { left = 0, right = 0, top = 0, bottom = 80 } ] [ toggleDisplayModeButton model ]
         ]
+
+
+display : Model -> List (Element Msg)
+display model =
+    case model.displayMode of
+        NetworkDisplay ->
+            networkDisplay model
+
+        AvatarDisplay ->
+            avatarDisplay model
 
 
 networkDisplay : Model -> List (Element Msg)
@@ -198,6 +225,13 @@ networkDisplay model =
     , column dataColumnStyle (displayListWithTitle "Nodes" <| displayNodes model.network)
     , column dataColumnStyle (displayListWithTitle "Edges" <| [ networkInput model ])
     , column [ centerX, alignTop, paddingEach { left = 40, right = 0, top = 0, bottom = 0 } ] [ report model.network ]
+    ]
+
+
+avatarDisplay : Model -> List (Element Msg)
+avatarDisplay model =
+    [ column [ centerX, alignTop, paddingEach { left = 0, right = 80, top = 0, bottom = 0 } ] [ displayNetwork model ]
+    , column dataColumnStyle (displayListWithTitle "Avatars" <| [])
     ]
 
 
@@ -214,6 +248,24 @@ networkInput model =
         , label = Input.labelAbove [ Font.size 0, Font.bold ] (text "Edges")
         , spellcheck = False
         }
+
+
+toggleDisplayModeButton : Model -> Element Msg
+toggleDisplayModeButton model =
+    Input.button (Widget.buttonStyle ++ [ moveDown 7.5 ])
+        { onPress = Just ToggleDisplayMode
+        , label = Element.text <| toggleDisplayTitle model
+        }
+
+
+toggleDisplayTitle : Model -> String
+toggleDisplayTitle model =
+    case model.displayMode of
+        AvatarDisplay ->
+            "Display: Avatar List"
+
+        NetworkDisplay ->
+            "Display: Network"
 
 
 updateNetworkButton : Model -> Element Msg
