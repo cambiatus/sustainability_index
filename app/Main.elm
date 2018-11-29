@@ -13,7 +13,7 @@ import Network
         , emptyNetwork
         )
 import NetworkParser
-import Network exposing(SimpleEdge)
+import Network exposing (SimpleEdge)
 import CSV
 import Widget
 import Svg exposing (svg)
@@ -56,7 +56,10 @@ type alias Model =
     , dataFormat : DataFormat
     }
 
-type DataFormat = CSV | SingleLine   
+
+type DataFormat
+    = CSV
+    | SingleLine
 
 
 initialNetworkAsCSV =
@@ -167,9 +170,13 @@ update msg model =
 
 simpleEdgeListFromString : DataFormat -> (String -> List SimpleEdge)
 simpleEdgeListFromString dataFormat =
-  case dataFormat of   
-    CSV -> CSV.simpleEdgeListFromString
-    SingleLine -> NetworkParser.simpleEdgeListFromString
+    case dataFormat of
+        CSV ->
+            CSV.simpleEdgeListFromString
+
+        SingleLine ->
+            NetworkParser.simpleEdgeListFromString
+
 
 view : Model -> Html Msg
 view model =
@@ -181,17 +188,16 @@ mainRow model =
     column [ width fill, height fill, centerX, centerY, spacing 20, Font.size 16 ]
         [ el [ Font.bold, Font.size 24, centerX, centerY, moveUp 20 ] (text "Network")
         , row [ centerX, spacing 20 ] (networkDisplay model)
-        , row [ centerX, paddingEach { left = 0, right = 0, top = 20, bottom = 80} ] [ networkEntryForm model ]
+        , row [ centerX, paddingEach { left = 0, right = 0, top = 20, bottom = 80 } ] [ networkEntryForm model ]
         ]
-
 
 
 networkDisplay : Model -> List (Element Msg)
 networkDisplay model =
-    [ column [ centerX, alignTop, paddingEach {left = 0, right = 80, top = 0, bottom = 0} ] [ displayNetwork model ]
+    [ column [ centerX, alignTop, paddingEach { left = 0, right = 80, top = 0, bottom = 0 } ] [ displayNetwork model ]
     , column dataColumnStyle (displayListWithTitle "Nodes" <| displayNodes model.network)
-    , column dataColumnStyle (displayListWithTitle "Edges" <| [networkInput model]) 
-    , column [ centerX, alignTop ] [ report model.network ]
+    , column dataColumnStyle (displayListWithTitle "Edges" <| [ networkInput model ])
+    , column [ centerX, alignTop, paddingEach { left = 40, right = 0, top = 0, bottom = 0 } ] [ report model.network ]
     ]
 
 
@@ -201,7 +207,7 @@ dataColumnStyle =
 
 networkInput : Model -> Element Msg
 networkInput model =
-    Input.multiline [ width (px 180), height (px 400) , spacing 8, moveUp 15]
+    Input.multiline [ width (px 180), height (px 400), spacing 8, moveUp 15 ]
         { onChange = InputNetworkString
         , text = model.networkAsString
         , placeholder = Nothing
@@ -212,7 +218,7 @@ networkInput model =
 
 updateNetworkButton : Model -> Element Msg
 updateNetworkButton model =
-    Input.button (Widget.buttonStyle ++ [moveDown 7.5   ])
+    Input.button (Widget.buttonStyle ++ [ moveDown 7.5 ])
         { onPress = Just UpdateNetwork
         , label = Element.text "Update Network"
         }
