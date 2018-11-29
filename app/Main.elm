@@ -54,6 +54,7 @@ type alias Model =
     , targetNode : String
     , edgeFlow : String
     , dataFormat : DataFormat
+    , avatarList : List NodeUrl
     }
 
 
@@ -79,6 +80,12 @@ Lucca, Jim, 30
 """
 
 
+initialAvatarList =
+    [ NodeUrl "AA" "https://s3.amazonaws.com/noteimages/jxxcarlson/hello.jpg"
+    , NodeUrl "BB" "https://s3.amazonaws.com/noteimages/jxxcarlson/hello.jpg"
+    ]
+
+
 initialModel : Model
 initialModel =
     { message = "Hello!"
@@ -88,6 +95,7 @@ initialModel =
     , targetNode = ""
     , edgeFlow = ""
     , dataFormat = CSV
+    , avatarList = initialAvatarList
     }
 
 
@@ -133,11 +141,6 @@ update msg model =
                     else
                         model.networkAsString
 
-                avatarList =
-                    [ NodeUrl "AA" "https://s3.amazonaws.com/noteimages/jxxcarlson/hello.jpg"
-                    , NodeUrl "BB" "https://s3.amazonaws.com/noteimages/jxxcarlson/hello.jpg"
-                    ]
-
                 newNetwork =
                     CSV.networkFromString newNetworkAsString
 
@@ -146,10 +149,7 @@ update msg model =
                     Network.changeNodeInfoInNetwork nodeName imageUrl network_
 
                 newNetwork2 =
-                    List.foldl updateNetwork newNetwork avatarList
-
-                --         |> Network.changeNodeInfoInNetwork "AA" "https://s3.amazonaws.com/noteimages/jxxcarlson/hello.jpg"
-                -- changeNodeInfoInList nodeName nodeInfo nodeList
+                    List.foldl updateNetwork newNetwork model.avatarList
             in
                 ( { model
                     | networkAsString = newNetworkAsString
