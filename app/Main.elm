@@ -90,8 +90,8 @@ Lucca, Jim, 30
 
 
 initialAvatarCSV =
-    """AA,https://s3.amazonaws.com/noteimages/jxxcarlson/hello.jpg
-BB,https://s3.amazonaws.com/noteimages/jxxcarlson/hello.jpg
+    """AA, https://s3.amazonaws.com/noteimages/jxxcarlson/hello.jpg
+BB, https://s3.amazonaws.com/noteimages/jxxcarlson/hello.jpg
 """
 
 

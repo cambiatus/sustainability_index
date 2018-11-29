@@ -59,7 +59,7 @@ csvFromEdgeList sel =
 
 csvOfSimpleEdge : SimpleEdge -> String
 csvOfSimpleEdge (SimpleEdge sourceNode targetNode flow) =
-    sourceNode ++ "," ++ targetNode ++ "," ++ String.fromFloat flow ++ "\n"
+    sourceNode ++ ", " ++ targetNode ++ ", " ++ String.fromFloat flow ++ "\n"
 
 
 networkFromString : String -> Network
@@ -163,7 +163,7 @@ avatarListToString avatarList =
 
 csvOfAvatar : NodeUrl -> String
 csvOfAvatar (NodeUrl name url) =
-    name ++ "," ++ url ++ "\n"
+    name ++ ", " ++ url ++ "\n"
 
 
 example =
