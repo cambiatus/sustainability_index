@@ -25,13 +25,13 @@ module Vector
 {-| A record representing a 2D vector
 -}
 type alias Vector =
-    { x : Float, y : Float, label : String }
+    { x : Float, y : Float, label : String, info : String }
 
 
 {-| A directed line segment with endponts a and b.
 -}
 type alias DirectedSegment =
-    { a : Vector, b : Vector, label : String  }
+    { a : Vector, b : Vector, label : String }
 
 
 {-| The dot product of vectors.
@@ -52,21 +52,21 @@ normSquared a =
 -}
 add : Vector -> Vector -> Vector
 add v w =
-    Vector (v.x + w.x) (v.y + w.y) (v.label ++ w.label)
+    Vector (v.x + w.x) (v.y + w.y) (v.label ++ w.label) (v.info ++ w.info)
 
 
 {-| The difference of two vectors.
 -}
 sub : Vector -> Vector -> Vector
 sub v w =
-    Vector (v.x - w.x) (v.y - w.y) (v.label ++ w.label)
+    Vector (v.x - w.x) (v.y - w.y) (v.label ++ w.label) (v.info ++ w.info)
 
 
 {-| The scalar product of a vector and a number.
 -}
 mul : Float -> Vector -> Vector
 mul c v =
-    Vector (c * v.x) (c * v.y) v.label
+    Vector (c * v.x) (c * v.y) v.label v.info
 
 
 {-| Rotate a vector counterclockwise by the
@@ -87,7 +87,7 @@ rotate theta v =
         yy =
             (sin theta) * x + cos theta * y
     in
-        Vector xx yy v.label
+        Vector xx yy v.label v.info
 
 
 {-| the angle in radians between vectors

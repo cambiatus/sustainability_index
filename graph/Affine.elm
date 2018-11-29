@@ -72,7 +72,7 @@ affineTransform coefficients_ point =
         y =
             coefficients_.c * point.y + coefficients_.d
     in
-        Vector x y point.label
+        Vector x y point.label point.info
 
 
 {-| linearTransform coefficients is an affine
@@ -89,4 +89,4 @@ linearTransform coefficients_ size =
 
         -- 5.0 * size.height
     in
-        Vector w h size.label
+        Vector w h size.label size.info

@@ -34,6 +34,7 @@ type alias ShapeData =
     , strokeColor : ColorRecord
     , fillColor : ColorRecord
     , label : String
+    , info : String
     }
 
 
@@ -61,16 +62,44 @@ affineTransform coefficients shape =
 -}
 draw : Shape -> List (S.Svg msg)
 draw shape =
-    let   
-        deltaX = -8
-        deltaY = 30
-    in
-    case shape of
-        Rect data_ ->
-            [S.rect (svgRectAttributes data_) [], SvgText.textDisplay 14 (data_.center.x + deltaX) (data_.center.y + deltaY) 0 data_.label]
+    let
+        deltaX =
+            -8
 
-        Ellipse data_ ->
-            [S.ellipse (svgEllipseAttributes data_) [], SvgText.textDisplay 14 (data_.center.x + deltaX) (data_.center.y + deltaY) 0 data_.label]
+        deltaY =
+            30
+    in
+        case shape of
+            Rect data_ ->
+                [ S.rect (svgRectAttributes data_) [], SvgText.textDisplay 14 (data_.center.x + deltaX) (data_.center.y + deltaY) 0 data_.label ]
+
+            Ellipse data_ ->
+                [ S.ellipse (svgEllipseAttributes data_) []
+                , S.image
+                    [ x (String.fromFloat (data_.center.x - 20))
+                    , y (String.fromFloat (data_.center.y - 20))
+                    , width "40px"
+                    , height "40px"
+                    , xlinkHref data_.info
+
+                    --, xlinkHref ""
+                    -- , xlinkHref "https://s3.amazonaws.com/noteimages/jxxcarlson/hello.jpg"
+                    ]
+                    []
+                , SvgText.textDisplay 14 (data_.center.x + deltaX) (data_.center.y + deltaY) 0 data_.label
+                ]
+
+
+
+{-
+
+   <svg width="5cm" height="4cm" version="1.1"
+          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+   	<image xlink:href="firefox.jpg" x="0" y="0" height="50px" width="50px"/>
+   </svg>
+
+-}
+-- https://ca.slack-edge.com/T0CJ5UNHK-U2VCR5R6H-g0a0d4d97299-72
 
 
 updateData : Shape -> ShapeData -> Shape
