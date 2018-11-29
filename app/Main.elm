@@ -43,6 +43,7 @@ type Msg
     | InputSourceNode String
     | InputTargetNode String
     | InputEdgeFlow String
+    | InputAvatarString String
     | UpdateNetwork
     | ToggleDisplayMode
 
@@ -135,6 +136,9 @@ update msg model =
 
         InputNetworkString str ->
             ( { model | networkAsString = str }, Cmd.none )
+
+        InputAvatarString str ->
+            ( { model | avatarCSV = str }, Cmd.none )
 
         UpdateNetwork ->
             let
@@ -241,12 +245,23 @@ networkDisplay model =
 avatarDisplay : Model -> List (Element Msg)
 avatarDisplay model =
     [ column [ centerX, alignTop, paddingEach { left = 0, right = 80, top = 0, bottom = 0 } ] [ displayNetwork model ]
-    , column dataColumnStyle (displayListWithTitle "Avatars" <| [])
+    , column dataColumnStyle (displayListWithTitle "Avatars" <| [ avatarInput model ])
     ]
 
 
 dataColumnStyle =
     [ centerX, spacing 10, alignTop, scrollbarX, height (px 300) ]
+
+
+avatarInput : Model -> Element Msg
+avatarInput model =
+    Input.multiline [ width (px 300), height (px 400), spacing 12, moveUp 15 ]
+        { onChange = InputAvatarString
+        , text = model.avatarCSV
+        , placeholder = Nothing
+        , label = Input.labelAbove [ Font.size 0, Font.bold ] (text "avatarParser")
+        , spellcheck = False
+        }
 
 
 networkInput : Model -> Element Msg
